@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Learn</title>
+<meta name="description" content="One new topic every day: a short lesson, teach-back, and quiz.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232f6fde'/><path d='M9 22V10h5a6 6 0 0 1 0 12z' fill='none' stroke='white' stroke-width='3'/></svg>">
+<style>
+:root {
+  --bg: #f8f7f3; --surface: #ffffff; --surface-2: #f1efe9;
+  --text: #1c1c1e; --muted: #5d6066; --border: #e2dfd6;
+  --accent: #2f62d0; --accent-soft: #e7eefc; --accent-text: #ffffff;
+  --good: #17773f; --good-soft: #e3f3e8; --bad: #b42318; --bad-soft: #fceae8;
+  --warn: #9a5b00; --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121316; --surface: #1b1d21; --surface-2: #24272c;
+    --text: #e9e9ec; --muted: #a2a6ad; --border: #30333a;
+    --accent: #7ea4ff; --accent-soft: #1f2a44; --accent-text: #0d1424;
+    --good: #5fd08f; --good-soft: #15301f; --bad: #ff8a80; --bad-soft: #3a1c1a;
+    --warn: #f0b45a; --shadow: none;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121316; --surface: #1b1d21; --surface-2: #24272c;
+  --text: #e9e9ec; --muted: #a2a6ad; --border: #30333a;
+  --accent: #7ea4ff; --accent-soft: #1f2a44; --accent-text: #0d1424;
+  --good: #5fd08f; --good-soft: #15301f; --bad: #ff8a80; --bad-soft: #3a1c1a;
+  --warn: #f0b45a; --shadow: none;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+a { color: var(--accent); }
+button, input, textarea { font: inherit; color: inherit; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+/* Header */
+header.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+header.top .wrap { display: flex; align-items: center; gap: 12px; height: 56px; }
+.brand { font-weight: 750; letter-spacing: -.01em; text-decoration: none; color: var(--text); font-size: 18px; margin-right: auto; white-space: nowrap; }
+.brand span { color: var(--accent); }
+nav.links { display: flex; gap: 4px; }
+nav.links a, .icon-btn {
+  text-decoration: none; color: var(--muted); padding: 6px 10px; border-radius: 8px; font-size: 15px; border: 0; background: none; cursor: pointer;
+}
+nav.links a[aria-current="page"] { color: var(--text); background: var(--surface-2); }
+.streak { font-size: 15px; font-weight: 650; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); white-space: nowrap; }
+.streak.on { background: #fff1de; color: #8a4b00; }
+:root[data-theme="dark"] .streak.on { background: #3a2a12; color: #f6c27a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .streak.on { background: #3a2a12; color: #f6c27a; } }
+
+main.wrap { padding-top: 28px; padding-bottom: 80px; }
+.icon-btn svg { display: block; width: 20px; height: 20px; }
+
+/* Lesson */
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+.chip { display: inline-block; font-size: 12.5px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); text-decoration: none; }
+.done-badge { color: var(--good); font-weight: 650; }
+h1 { font-size: clamp(28px, 6vw, 38px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 18px; }
+h2 { font-size: 22px; letter-spacing: -.01em; margin: 44px 0 14px; line-height: 1.25; }
+h3 { font-size: 18.5px; margin: 28px 0 6px; line-height: 1.3; }
+p { margin: 0 0 14px; }
+.hook { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); }
+.hook .label { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.hook p:last-child { margin: 0; }
+.section-body p:last-child { margin-bottom: 0; }
+.diagram { margin: 28px 0 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.diagram svg { display: block; width: 100%; height: auto; color: var(--text); font-family: inherit; }
+.diagram svg text { fill: currentColor; font-size: 13px; }
+.diagram svg .muted { fill: var(--muted); stroke: var(--muted); }
+.diagram svg .accent { fill: var(--accent); }
+.diagram svg .accent-s { stroke: var(--accent); fill: none; }
+.diagram svg .soft { fill: var(--accent-soft); }
+.diagram svg .good { fill: var(--good); }
+.diagram svg .bad { fill: var(--bad); }
+.diagram svg .bad-s { stroke: var(--bad); fill: none; }
+.diagram svg .line { stroke: currentColor; fill: none; }
+.diagram svg .surface2 { fill: var(--surface-2); }
+.diagram figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin: 14px 0; box-shadow: var(--shadow); }
+.card .q { font-weight: 650; margin-bottom: 10px; }
+textarea { width: 100%; min-height: 84px; resize: vertical; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); line-height: 1.5; }
+textarea:focus, input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--surface); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 600; text-decoration: none; color: var(--text); }
+.btn:hover { background: var(--surface-2); }
+.btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.07); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.model { margin-top: 12px; padding: 12px 14px; background: var(--good-soft); border-radius: 10px; }
+.model .label, .small-label { font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--good); display: block; margin-bottom: 2px; }
+.hint { color: var(--muted); font-size: 14px; }
+
+/* Quiz */
+.opts { display: grid; gap: 8px; }
+.opt { text-align: left; width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; line-height: 1.45; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt.correct { border-color: var(--good); background: var(--good-soft); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt .why { display: block; font-size: 14.5px; color: var(--muted); margin-top: 4px; }
+.opt.correct .why, .opt.wrong .why { color: var(--text); }
+.verdict { font-weight: 700; margin-top: 10px; }
+.verdict.good { color: var(--good); } .verdict.bad { color: var(--bad); }
+.score { text-align: center; padding: 20px; }
+.score .big { font-size: 40px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+
+ul.deeper { padding-left: 20px; margin: 0; }
+ul.deeper li { margin-bottom: 8px; }
+
+/* Ask */
+.ask input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); }
+.passage { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; margin: 12px 0; }
+.passage .src { font-size: 13px; color: var(--muted); font-weight: 600; }
+mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 3px; padding: 0 2px; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }
+.notice { background: var(--surface-2); border-radius: 10px; padding: 10px 14px; font-size: 15px; color: var(--muted); margin-bottom: 16px; }
+
+/* Archive */
+.tabs { display: flex; gap: 6px; margin: 0 0 18px; }
+.tabs a { text-decoration: none; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); font-size: 15px; }
+.tabs a[aria-current="page"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.list { list-style: none; padding: 0; margin: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.list li + li { border-top: 1px solid var(--border); }
+.list a { display: flex; gap: 12px; align-items: center; padding: 12px 16px; text-decoration: none; color: var(--text); }
+.list a:hover { background: var(--surface-2); }
+.list .date { color: var(--muted); font-size: 14px; min-width: 88px; font-variant-numeric: tabular-nums; }
+.list .t { flex: 1; min-width: 0; }
+.list .t small { display: block; color: var(--muted); font-size: 13px; text-transform: capitalize; }
+.list .check { font-weight: 700; color: var(--good); white-space: nowrap; font-size: 14px; }
+.list .check.no { color: var(--muted); font-weight: 400; }
+.cat-h { margin: 28px 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+
+footer { color: var(--muted); font-size: 13.5px; text-align: center; padding: 0 16px 40px; }
+@media (max-width: 480px) {
+  body { font-size: 16.5px; }
+  header.top .wrap { gap: 6px; }
+  nav.links a, .icon-btn { padding: 6px 7px; }
+  .list .date { min-width: 74px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#/">Daily <span>Learn</span></a>
+    <span class="streak" id="streak" title="Days in a row you finished the quiz">🔥 0</span>
+    <nav class="links">
+      <a href="#/" id="nav-today">Today</a>
+      <a href="#/archive" id="nav-archive">Archive</a>
+    </nav>
+    <button class="icon-btn" id="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+<main class="wrap" id="app" aria-live="polite"></main>
+<footer>Progress is saved in this browser only. A new topic arrives every day at midnight.</footer>
+
+<script>
+// Global data registry: lesson files call DL.setManifest(...) and DL.add([...]).
+window.DL = {
+  manifest: [], lessons: {}, _chunks: {},
+  setManifest(m) { this.manifest = m; },
+  add(arr) { arr.forEach(l => { this.lessons[l.id] = l; }); }
+};
+</script>
+<script src="lessons/manifest.js"></script>
+<script>
+(function () {
+  "use strict";
+  const CATS = ["science", "history", "engineering", "economics", "psychology", "geography", "math", "technology", "nature", "random"];
+  const CAT_LABEL = { random: "Random fascinating fact" };
+  const catLabel = c => CAT_LABEL[c] || c.charAt(0).toUpperCase() + c.slice(1);
+  const KEY = "dailylearn:v1";
+  const app = document.getElementById("app");
+
+  // ---------- Storage ----------
+  const blank = () => ({ history: {}, cycleUsed: [], completed: {}, done: {}, teachBack: {}, theme: null });
+  function loadState() {
+    try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); } catch (e) {}
+    return blank();
+  }
+  const state = loadState();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // ---------- Dates ----------
+  const pad = n => String(n).padStart(2, "0");
+  const keyOf = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  function todayKey() {
+    // ?today=YYYY-MM-DD lets you preview another day (handy for testing).
+    const p = new URLSearchParams(location.search).get("today");
+    return p && /^\d{4}-\d{2}-\d{2}$/.test(p) ? p : keyOf(new Date());
+  }
+  const parseKey = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+  const addDays = (k, n) => { const d = parseKey(k); d.setDate(d.getDate() + n); return keyOf(d); };
+  const prettyDate = k => parseKey(k).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const shortDate = k => parseKey(k).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+  // ---------- Topics & schedule ----------
+  const byId = id => DL.manifest.find(t => t.id === id);
+
+  // Pick the next topic: rotate categories after `prevCat`, choosing the first topic
+  // not yet used in this cycle. New lessons added to the manifest are automatically "unused".
+  function pickNext(prevCat, exclude) {
+    const ids = new Set(DL.manifest.map(t => t.id));
+    state.cycleUsed = state.cycleUsed.filter(id => ids.has(id));
+    let used = new Set(state.cycleUsed);
+    let avail = DL.manifest.filter(t => !used.has(t.id) && !exclude.has(t.id));
+    if (!avail.length) {           // whole list used: start a fresh cycle
+      state.cycleUsed = [];
+      avail = DL.manifest.filter(t => !exclude.has(t.id));
+    }
+    if (!avail.length) avail = DL.manifest.slice();
+    const start = prevCat ? CATS.indexOf(prevCat) + 1 : 0;
+    for (let i = 0; i < CATS.length; i++) {
+      const c = CATS[(start + i) % CATS.length];
+      const t = avail.find(x => x.category === c);
+      if (t) return t;
+    }
+    return avail[0];
+  }
+  function prevCategory(beforeKey) {
+    const keys = Object.keys(state.history).filter(k => k < beforeKey).sort();
+    const t = keys.length ? byId(state.history[keys[keys.length - 1]]) : null;
+    return t ? t.category : null;
+  }
+  function ensureToday() {
+    const k = todayKey();
+    if (state.history[k] && byId(state.history[k])) return k;
+    if (!DL.manifest.length) return k;
+    const t = pickNext(prevCategory(k), new Set());
+    state.history[k] = t.id;
+    state.cycleUsed.push(t.id);
+    save();
+    return k;
+  }
+  function skipToday() {
+    const k = todayKey();
+    const cur = byId(state.history[k]);
+    if (!cur || DL.manifest.length < 2) return;
+    state.cycleUsed = state.cycleUsed.filter(id => id !== cur.id); // skipped topic stays available later
+    const t = pickNext(cur.category, new Set([cur.id]));
+    state.history[k] = t.id;
+    state.cycleUsed.push(t.id);
+    save();
+  }
+
+  // ---------- Streak ----------
+  function streak() {
+    const t = todayKey();
+    const ok = k => state.completed[k] && state.completed[k].onTime;
+    let k = ok(t) ? t : addDays(t, -1), n = 0;
+    while (ok(k)) { n++; k = addDays(k, -1); }
+    return n;
+  }
+  function renderStreak() {
+    const n = streak(), el = document.getElementById("streak");
+    el.textContent = "🔥 " + n;
+    el.classList.toggle("on", n > 0);
+    el.title = n === 1 ? "1 day in a row" : n + " days in a row";
+  }
+
+  // ---------- Lesson loading ----------
+  function loadChunk(n) {
+    if (DL._chunks[n]) return DL._chunks[n];
+    DL._chunks[n] = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "lessons/lessons-" + pad(n) + ".js";
+      s.onload = resolve;
+      s.onerror = () => { delete DL._chunks[n]; reject(new Error("Could not load " + s.src)); };
+      document.head.appendChild(s);
+    });
+    return DL._chunks[n];
+  }
+  async function getLesson(id) {
+    const t = byId(id);
+    if (!t) return null;
+    if (!DL.lessons[id]) await loadChunk(t.chunk);
+    return DL.lessons[id] || null;
+  }
+
+  // ---------- Helpers ----------
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const stripTags = s => String(s).replace(/<[^>]+>/g, "");
+  const paras = s => String(s).split(/\n\n+/).map(p => "<p>" + p + "</p>").join("");
+  function setNav(which) {
+    document.getElementById("nav-today").toggleAttribute("aria-current", which === "today");
+    document.getElementById("nav-archive").toggleAttribute("aria-current", which === "archive");
+    if (which === "today") document.getElementById("nav-today").setAttribute("aria-current", "page");
+    if (which === "archive") document.getElementById("nav-archive").setAttribute("aria-current", "page");
+  }
+
+  // ---------- Lesson page ----------
+  // ctx: { dateKey (or null when opened from All topics), isToday }
+  function renderLesson(L, ctx) {
+    const comp = ctx.dateKey ? state.completed[ctx.dateKey] : null;
+    const finished = (comp && comp.topicId === L.id) || state.done[L.id];
+    const score = comp && comp.topicId === L.id ? comp.score : (state.done[L.id] ? state.done[L.id].score : null);
+    let h = "";
+    if (!ctx.isToday && ctx.dateKey) h += '<div class="notice">You are revisiting ' + esc(prettyDate(ctx.dateKey)) + '. <a href="#/">Go to today’s lesson →</a></div>';
+    if (!ctx.dateKey) h += '<div class="notice">Browsing the topic library. <a href="#/">Go to today’s lesson →</a></div>';
+    h += '<div class="meta"><a class="chip" href="#/archive/all">' + esc(catLabel(L.category)) + "</a>";
+    if (ctx.dateKey) h += "<span>" + esc(prettyDate(ctx.dateKey)) + "</span>";
+    if (finished) h += '<span class="done-badge">✓ Quiz done' + (score != null ? " · " + score + "/5" : "") + "</span>";
+    h += "</div>";
+    h += "<h1>" + esc(L.title) + "</h1>";
+    h += '<div class="hook"><span class="label">Why care? · 30 seconds</span>' + paras(L.hook) + "</div>";
+    if (ctx.isToday) h += '<div class="toolbar"><button class="btn" id="skip">↻ Give me a different topic</button></div>';
+
+    h += "<h2>The lesson</h2>";
+    L.sections.forEach((s, i) => {
+      h += "<h3>" + esc(s.heading) + '</h3><div class="section-body">' + paras(s.body) + "</div>";
+      // place the diagram after the section it belongs to (default: after section 2)
+      const at = L.diagram ? (L.diagram.after != null ? L.diagram.after : 1) : -1;
+      if (i === at) h += '<figure class="diagram">' + L.diagram.svg + (L.diagram.caption ? "<figcaption>" + L.diagram.caption + "</figcaption>" : "") + "</figure>";
+    });
+
+    h += '<h2>Teach it back</h2><p class="hint">Answer in your own words first. Explaining it is the fastest way to find gaps. Then compare.</p>';
+    L.teachBack.forEach((tb, i) => {
+      const saved = (state.teachBack[L.id] || [])[i] || "";
+      h += '<div class="card" data-tb="' + i + '"><div class="q">' + (i + 1) + ". " + esc(tb.q) + "</div>" +
+        '<textarea aria-label="Your answer" placeholder="Type your explanation…">' + esc(saved) + "</textarea>" +
+        '<div class="row"><button class="btn reveal"' + (saved.trim().length < 3 ? " disabled" : "") + ">Show model answer</button>" +
+        '<span class="hint">' + (saved.trim().length < 3 ? "Write something first" : "") + "</span></div>" +
+        '<div class="model" hidden><span class="label">Model answer</span>' + tb.model + "</div></div>";
+    });
+
+    h += '<h2>Quiz</h2><div id="quiz"></div>';
+
+    h += '<h2>Go deeper</h2><ul class="deeper">' + L.goDeeper.map(g => "<li>" + g + "</li>").join("") + "</ul>";
+
+    h += '<h2>Ask a question</h2><div class="card ask"><form id="ask-form"><input id="ask-q" type="text" placeholder="e.g. Why does that happen?" autocomplete="off" aria-label="Your question"><div class="row"><button class="btn primary" type="submit">Search</button><span class="hint">Searches this lesson and links you to Wikipedia and the web. No AI involved.</span></div></form><div id="ask-out"></div></div>';
+
+    app.innerHTML = h;
+    document.title = L.title + " · Daily Learn";
+    window.scrollTo(0, 0);
+
+    const skip = document.getElementById("skip");
+    if (skip) skip.onclick = () => { skipToday(); route(); };
+
+    app.querySelectorAll("[data-tb]").forEach(card => {
+      const i = +card.dataset.tb, ta = card.querySelector("textarea"), btn = card.querySelector(".reveal"), hint = card.querySelector(".hint");
+      ta.addEventListener("input", () => {
+        (state.teachBack[L.id] = state.teachBack[L.id] || [])[i] = ta.value;
+        save();
+        const ok = ta.value.trim().length >= 3;
+        btn.disabled = !ok; hint.textContent = ok ? "" : "Write something first";
+      });
+      btn.onclick = () => { const m = card.querySelector(".model"); m.hidden = !m.hidden; btn.textContent = m.hidden ? "Show model answer" : "Hide model answer"; };
+    });
+
+    renderQuiz(L, ctx);
+    setupAsk(L);
+  }
+
+  function renderQuiz(L, ctx) {
+    const box = document.getElementById("quiz");
+    const answers = new Array(L.quiz.length).fill(null);
+    function draw() {
+      let h = "";
+      L.quiz.forEach((q, qi) => {
+        const a = answers[qi];
+        h += '<div class="card"><div class="q">' + (qi + 1) + ". " + esc(q.q) + '</div><div class="opts">';
+        q.options.forEach((o, oi) => {
+          let cls = "opt";
+          if (a !== null) { if (oi === q.answer) cls += " correct"; else if (oi === a) cls += " wrong"; }
+          h += '<button class="' + cls + '" data-q="' + qi + '" data-o="' + oi + '"' + (a !== null ? " disabled" : "") + ">" +
+            (a !== null && oi === q.answer ? "✓ " : a !== null && oi === a ? "✗ " : "") + esc(o) +
+            (a !== null ? '<span class="why">' + q.explain[oi] + "</span>" : "") + "</button>";
+        });
+        h += "</div>";
+        if (a !== null) h += '<div class="verdict ' + (a === q.answer ? "good" : "bad") + '">' + (a === q.answer ? "Correct!" : "Not quite. The right answer is highlighted in green.") + "</div>";
+        h += "</div>";
+      });
+      if (answers.every(x => x !== null)) {
+        const s = answers.filter((x, i) => x === L.quiz[i].answer).length;
+        const msg = s === 5 ? "Perfect score. You’ve got this one." : s >= 3 ? "Nice work. Re-read the explanations for the ones you missed." : "Good effort. Skim the lesson again and retake it.";
+        h += '<div class="card score"><div class="big">' + s + "/5</div><div>" + msg + '</div><div class="row" style="justify-content:center"><button class="btn" id="retake">Retake quiz</button>' +
+          (ctx.isToday ? "" : '<a class="btn" href="#/">Today’s lesson</a>') + "</div></div>";
+        record(L, ctx, s);
+      }
+      box.innerHTML = h;
+      box.querySelectorAll(".opt:not(:disabled)").forEach(b => b.onclick = () => { answers[+b.dataset.q] = +b.dataset.o; const y = window.scrollY; draw(); window.scrollTo(0, y); });
+      const r = document.getElementById("retake");
+      if (r) r.onclick = () => { answers.fill(null); draw(); box.scrollIntoView({ behavior: "smooth" }); };
+    }
+    draw();
+  }
+
+  function record(L, ctx, score) {
+    const prev = state.done[L.id];
+    state.done[L.id] = { score: Math.max(score, prev ? prev.score : 0) };
+    if (ctx.dateKey && state.history[ctx.dateKey] === L.id) {
+      const c = state.completed[ctx.dateKey];
+      const onTime = ctx.dateKey === keyOf(new Date()) || ctx.dateKey === todayKey();
+      state.completed[ctx.dateKey] = { topicId: L.id, score: Math.max(score, c && c.topicId === L.id ? c.score : 0), onTime: !!((c && c.topicId === L.id && c.onTime) || onTime) };
+    }
+    save();
+    renderStreak();
+    const meta = app.querySelector(".meta");
+    if (meta && !meta.querySelector(".done-badge")) meta.insertAdjacentHTML("beforeend", '<span class="done-badge">✓ Quiz done</span>');
+  }
+
+  // ---------- Ask (keyword search of the lesson) ----------
+  const STOP = new Set("a an the is are was were be been being am do does did of to in on at by for with from as and or but if then than so that this these those it its it's what why how when where who whom which can could would should will shall may might must i you we they he she me my your our their them us not no yes about into over under more most less very just also there here have has had get got make makes made".split(" "));
+  const stem = w => w.replace(/'s$/, "").replace(/(ies)$/, "y").replace(/(ing|ed|es|s)$/, "").replace(/e$/, "");
+  const tokens = s => (stripTags(s).toLowerCase().match(/[a-z0-9]+(?:'[a-z]+)?/g) || []).filter(w => w.length > 1 && !STOP.has(w));
+
+  function lessonPassages(L) {
+    const out = [];
+    L.sections.forEach(s => s.body.split(/\n\n+/).forEach(p => out.push({ src: s.heading, text: p })));
+    out.push({ src: "Why care?", text: L.hook });
+    L.teachBack.forEach(t => out.push({ src: "Teach it back: " + t.q, text: t.model }));
+    L.quiz.forEach(q => out.push({ src: "Quiz: " + q.q, text: q.explain[q.answer] }));
+    if (L.diagram && L.diagram.caption) out.push({ src: "Diagram", text: L.diagram.caption });
+    return out;
+  }
+  function searchLesson(L, query) {
+    const qStems = [...new Set(tokens(query).map(stem))].filter(Boolean);
+    if (!qStems.length) return [];
+    const ps = lessonPassages(L).map(p => ({ ...p, stems: new Set(tokens(p.text + " " + p.src).map(stem)) }));
+    const N = ps.length;
+    const idf = {};
+    qStems.forEach(s => { const df = ps.filter(p => p.stems.has(s)).length; idf[s] = df ? Math.log(1 + N / df) : 0; });
+    return ps.map(p => {
+      let sc = 0, hits = 0;
+      qStems.forEach(s => { if (p.stems.has(s)) { sc += idf[s]; hits++; } });
+      sc *= (1 + hits / qStems.length);
+      return { ...p, score: sc };
+    }).filter(p => p.score > 0).sort((a, b) => b.score - a.score).slice(0, 3).map(p => ({ ...p, qStems }));
+  }
+  function highlight(text, qStems) {
+    return esc(stripTags(text)).replace(/[A-Za-z0-9]+(?:'[a-z]+)?/g, w => qStems.includes(stem(w.toLowerCase())) && !STOP.has(w.toLowerCase()) ? "<mark>" + w + "</mark>" : w);
+  }
+  function setupAsk(L) {
+    const form = document.getElementById("ask-form"), out = document.getElementById("ask-out"), inp = document.getElementById("ask-q");
+    form.onsubmit = e => {
+      e.preventDefault();
+      const q = inp.value.trim();
+      if (!q) { inp.focus(); return; }
+      const res = searchLesson(L, q);
+      const full = L.title + " " + q;
+      let h = "";
+      if (res.length) {
+        h += '<p class="small-label" style="color:var(--accent);margin-top:16px">From this lesson</p>';
+        res.forEach(r => { h += '<div class="passage"><div class="src">' + esc(r.src) + "</div>" + highlight(r.text, r.qStems) + "</div>"; });
+      } else {
+        h += '<p class="hint" style="margin-top:14px">Nothing in this lesson matches that question. Try other words, or use the links below.</p>';
+      }
+      h += '<p class="small-label" style="color:var(--accent);margin-top:16px">Look further</p><div class="row" style="margin-top:4px">' +
+        '<a class="btn" target="_blank" rel="noopener" href="https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(full) + '">Wikipedia ↗</a>' +
+        '<a class="btn" target="_blank" rel="noopener" href="https://duckduckgo.com/?q=' + encodeURIComponent(full) + '">Web search ↗</a>' +
+        '<a class="btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + encodeURIComponent(full) + '">Google ↗</a></div>';
+      out.innerHTML = h;
+    };
+  }
+
+  // ---------- Archive ----------
+  function renderArchive(tab) {
+    let h = '<h1>Archive</h1><div class="tabs"><a href="#/archive"' + (tab === "days" ? ' aria-current="page"' : "") + '>Past days</a><a href="#/archive/all"' + (tab === "all" ? ' aria-current="page"' : "") + ">All topics (" + DL.manifest.length + ")</a></div>";
+    if (tab === "days") {
+      const t = todayKey();
+      const keys = Object.keys(state.history).filter(k => k <= t && byId(state.history[k])).sort().reverse();
+      const done = keys.filter(k => state.completed[k]).length;
+      h += '<p class="hint">' + keys.length + " day" + (keys.length === 1 ? "" : "s") + " so far · " + done + " quiz" + (done === 1 ? "" : "zes") + " finished</p>";
+      h += '<ul class="list">' + keys.map(k => {
+        const tp = byId(state.history[k]), c = state.completed[k];
+        return '<li><a href="' + (k === t ? "#/" : "#/day/" + k) + '"><span class="date">' + (k === t ? "Today" : esc(shortDate(k))) + '</span><span class="t">' + esc(tp.title) + "<small>" + esc(catLabel(tp.category)) + "</small></span>" +
+          (c ? '<span class="check">✓ ' + c.score + "/5</span>" : '<span class="check no">-</span>') + "</a></li>";
+      }).join("") + "</ul>";
+    } else {
+      CATS.forEach(c => {
+        const ts = DL.manifest.filter(x => x.category === c);
+        if (!ts.length) return;
+        h += '<h2 class="cat-h">' + esc(catLabel(c)) + " · " + ts.length + '</h2><ul class="list">' + ts.map(tp =>
+          '<li><a href="#/topic/' + encodeURIComponent(tp.id) + '"><span class="t">' + esc(tp.title) + "</span>" +
+          (state.done[tp.id] ? '<span class="check">✓ ' + state.done[tp.id].score + "/5</span>" : "") + "</a></li>").join("") + "</ul>";
+      });
+    }
+    app.innerHTML = h;
+    document.title = "Archive · Daily Learn";
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- Router ----------
+  async function showLesson(id, ctx) {
+    app.innerHTML = '<p class="hint">Loading…</p>';
+    try {
+      const L = await getLesson(id);
+      if (!L) throw new Error("Lesson not found");
+      renderLesson(L, ctx);
+    } catch (e) {
+      app.innerHTML = '<h1>Couldn’t load this lesson</h1><p>' + esc(e.message) + '</p><p class="hint">If you opened the file directly, make sure the <code>lessons</code> folder sits next to <code>index.html</code>.</p>';
+    }
+  }
+  function route() {
+    renderStreak();
+    if (!DL.manifest.length) { app.innerHTML = "<h1>No lessons found</h1><p>The <code>lessons/manifest.js</code> file is missing or empty.</p>"; return; }
+    const tk = ensureToday();
+    const hash = location.hash.replace(/^#/, "") || "/";
+    let m;
+    if ((m = hash.match(/^\/day\/(\d{4}-\d{2}-\d{2})$/)) && state.history[m[1]] && m[1] !== tk) {
+      setNav(""); return showLesson(state.history[m[1]], { dateKey: m[1], isToday: false });
+    }
+    if ((m = hash.match(/^\/topic\/(.+)$/))) {
+      const id = decodeURIComponent(m[1]);
+      if (state.history[tk] === id) { setNav("today"); return showLesson(id, { dateKey: tk, isToday: true }); }
+      setNav(""); return showLesson(id, { dateKey: null, isToday: false });
+    }
+    if (hash === "/archive") { setNav("archive"); return renderArchive("days"); }
+    if (hash === "/archive/all") { setNav("archive"); return renderArchive("all"); }
+    setNav("today");
+    showLesson(state.history[tk], { dateKey: tk, isToday: true });
+  }
+
+  // ---------- Theme ----------
+  function applyTheme() {
+    if (state.theme) document.documentElement.setAttribute("data-theme", state.theme);
+    else document.documentElement.removeAttribute("data-theme");
+  }
+  document.getElementById("theme-btn").onclick = () => {
+    const sysDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const curDark = state.theme ? state.theme === "dark" : sysDark;
+    state.theme = curDark ? "light" : "dark";
+    if ((state.theme === "dark") === sysDark) state.theme = null; // back to following the system
+    applyTheme(); save();
+  };
+  applyTheme();
+
+  // Roll over to the new day's topic at midnight if the tab stays open.
+  let lastDay = todayKey();
+  setInterval(() => { const k = todayKey(); if (k !== lastDay) { lastDay = k; route(); } }, 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && todayKey() !== lastDay) { lastDay = todayKey(); route(); } });
+
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body>
+</html>
